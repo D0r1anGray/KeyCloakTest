@@ -46,6 +46,18 @@ services:
     networks:
       - keycloak_net
 
+  smallservice:
+    build:
+      context: ./smallservice
+    container_name: smallservice
+    depends_on:
+      - keycloak
+    ports:
+      - "8092:8092"
+    networks:
+      - keycloak_net
+
+
 volumes:
   postgres_data:
 
