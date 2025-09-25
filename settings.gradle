@@ -2,3 +2,4 @@ rootProject.name = 'KeyCloakTest'
 
 include 'eventapp'
 include 'smallservice'
+include 'gateway'

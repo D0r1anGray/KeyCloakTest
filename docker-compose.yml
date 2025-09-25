@@ -57,6 +57,17 @@ services:
     networks:
       - keycloak_net
 
+  gateway:
+    build:
+      context: ./gateway
+    container_name: gateway
+    depends_on:
+      - keycloak
+    ports:
+      - "8093:8093"
+    networks:
+      - keycloak_net
+
 
 volumes:
   postgres_data:
