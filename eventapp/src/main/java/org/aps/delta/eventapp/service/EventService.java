@@ -32,17 +32,8 @@ public class EventService {
     }
 
     public EventDto save(EventDto dto) {
-        EventDto eventDto = new EventDto(UUID.randomUUID().toString(), dto.type(), System.currentTimeMillis(), System.currentTimeMillis(), dto.description());
 
-        String message = "event: " + eventDto.uid() + " received";
-
-        Map<String, Object> notification = Map.of(
-                "type", "SYSTEM_ALERT",
-                "recipient", "admin@company.com",
-                "message", message
-        );
-
-        return eventDto;
+        return new EventDto(UUID.randomUUID().toString(), dto.type(), System.currentTimeMillis(), System.currentTimeMillis(), dto.description());
     }
 
     private EventDto generateEvent(int index) {

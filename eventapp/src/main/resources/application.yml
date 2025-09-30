@@ -8,13 +8,13 @@ spring:
           keycloak:
             provider: keycloak
             client-id: eventapp
-            client-secret: <SECRET>
+            client-secret: 4SLE64OCc59Q8ZgF1O7JTrgFbsu4jiCm
             client-name: eventapp
             authorization-grant-type: authorization_code
             scope: openid, profile, email
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9090/realms/proselyte
+          issuer-uri: http://localhost:9090/realms/delta
 
 server:
   port: 8091
