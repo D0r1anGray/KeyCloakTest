@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/events")
+@RequestMapping("/event")
 public class EventRestControllerV1 {
 
     private final EventService eventService;
 
 
-    @GetMapping
+    @GetMapping("/get_events")
     public EventPageDto getEvents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -22,7 +22,7 @@ public class EventRestControllerV1 {
         return eventService.getEvents(page, size);
     }
 
-    @PostMapping
+    @PostMapping("/create_event")
     public EventDto createEvent(@RequestBody EventDto dto) {
         return eventService.save(dto);
     }

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
         List<String> roles = jwt.getClaimAsStringList("roles");
