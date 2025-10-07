@@ -17,7 +17,7 @@ public class MyFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"Требуется токен JWT\"}");
+            response.getWriter().write("\"error:\" \"UNAUTHORIZED\"");
             return;
         }
         filterChain.doFilter(request, response);

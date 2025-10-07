@@ -1,17 +1,6 @@
 spring:
   application:
     name: gateway
-  cloud:
-    gateway:
-      routes:
-        - id: smallservice
-          uri: http://localhost:8092
-          predicates:
-            - Path=/small/**
-        - id: eventapp
-          uri: http://localhost:8091
-          predicates:
-            - Path=/event/**
   security:
     oauth2:
       resourceserver:
@@ -20,3 +9,14 @@ spring:
 
 server:
   port: 8093
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+gateway:
+  routes:
+    eventapp: http://localhost:8091/
+    smallservice: http://localhost:8092/

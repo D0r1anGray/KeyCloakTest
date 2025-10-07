@@ -1,34 +1,52 @@
 package org.aps.delta.gateway.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
+@RestController
+@RequestMapping
 public class GatewayRestController {
 
-    @GetMapping("/call-small-admin")
-    public String callSmallAdmin(Authentication authentication) {
-        String token = ((JwtAuthenticationToken) authentication).getToken().getTokenValue();
-        WebClient webClient = WebClient.create("http://localhost:8092");
-        return webClient.get()
-                .uri("/small/sayHelloAdmin")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    private final RestTemplate restTemplate;
+
+    @Value("${gateway.routes.eventapp}")
+    private String eventappUri;
+
+    @Value("${gateway.routes.smallservice}")
+    private String smallserviceUri;
+
+    public GatewayRestController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/call-small-user")
-    public String callSmallUser(Authentication authentication) {
-        String token = ((JwtAuthenticationToken) authentication).getToken().getTokenValue();
-        WebClient webClient = WebClient.create("http://localhost:8092");
-        return webClient.get()
-                .uri("/small/sayHelloUser")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    @RequestMapping("/event.**")
+    public ResponseEntity<String> routeToEventapp(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String targerUrl = eventappUri + path;
+        return forwardRequest(request, targerUrl);
+    }
+
+    @RequestMapping("/small/**")
+    public ResponseEntity<String> routeToSmallservice(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String targerUrl = smallserviceUri + path;
+        return forwardRequest(request, targerUrl);
+    }
+
+    private ResponseEntity<String> forwardRequest(HttpServletRequest request, String targetUrl) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization", request.getHeader("Authorization"));
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, httpHeaders);
+        return restTemplate.exchange(targetUrl, HttpMethod.valueOf(request.getMethod()), httpEntity, String.class);
     }
 }
+
